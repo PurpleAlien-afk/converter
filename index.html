@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Romaji to Japanese Converter</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#121212">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+    }
+    h2 {
+        color: #00e676;
+    }
+    input {
+        padding: 15px;
+        width: 90%;
+        font-size: 20px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        margin-bottom: 20px;
+        background-color: #1e1e1e;
+        color: white;
+    }
+    .card {
+        background-color: #1f1f1f;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .label {
+        font-weight: bold;
+        color: #00bfa5;
+        margin-bottom: 5px;
+    }
+    .output-text {
+        font-size: 22px;
+        margin-bottom: 10px;
+        word-break: break-all;
+    }
+    button {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background-color: #00bfa5;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+    button:hover {
+        background-color: #009e87;
+    }
+</style>
+<script src="https://unpkg.com/wanakana"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log('Service Worker Registered'));
+}
+</script>
+</head>
+<body>
+<h2>Romaji → Japanese</h2>
+<input id="romaji" placeholder="Type Romaji..." oninput="convert()">
+
+<div class="card">
+    <div class="label">Hiragana</div>
+    <div id="hiragana" class="output-text"></div>
+    <button onclick="copyText('hiragana')">Copy</button>
+</div>
+
+<div class="card">
+    <div class="label">Katakana</div>
+    <div id="katakana" class="output-text"></div>
+    <button onclick="copyText('katakana')">Copy</button>
+</div>
+
+<div class="card">
+    <div class="label">Kanji (if known)</div>
+    <div id="kanji" class="output-text"></div>
+    <button onclick="copyText('kanji')">Copy</button>
+</div>
+
+<script>
+const kanjiDict = {
+    "saikou": "最高", "arigatou": "ありがとう", "ohayou": "おはよう", "ohayougozaimasu": "おはようございます",
+    "konbanwa": "こんばんは", "konnichiwa": "こんにちは", "oyasuminasai": "おやすみなさい",
+    "sumimasen": "すみません", "gomen": "ごめん", "gomennasai": "ごめんなさい",
+    "onegai": "お願い", "onegai shimasu": "お願いします", "itadakimasu": "いただきます",
+    "gochisousama": "ごちそうさま", "gochisousamadeshita": "ごちそうさまでした",
+    "hai": "はい", "iie": "いいえ", "wakarimasu": "分かります", "wakarimasen": "分かりません",
+    "nihon": "日本", "nihongo": "日本語", "eigo": "英語", "tokyo": "東京", "osaka": "大阪",
+    "kyoto": "京都", "sakura": "桜", "yume": "夢", "hoshi": "星", "ai": "愛", "kaze": "風",
+    "ame": "雨", "yuki": "雪", "taiyou": "太陽", "tsuki": "月", "hana": "花", "mizu": "水",
+    "umi": "海", "yama": "山", "mori": "森", "inu": "犬", "neko": "猫", "tori": "鳥", "uma": "馬",
+    "densha": "電車", "kuruma": "車", "jidousha": "自動車", "eki": "駅", "hikouki": "飛行機",
+    "tabemono": "食べ物", "nomimono": "飲み物", "pan": "パン", "gohan": "ご飯", "ocha": "お茶",
+    "biiru": "ビール", "waini": "ワイン", "sake": "酒", "ringo": "林檎", "ichigo": "苺", "mikan": "蜜柑",
+    "banana": "バナナ", "niku": "肉", "sakana": "魚", "yasai": "野菜", "tomato": "トマト",
+    "jikan": "時間", "toki": "時", "asa": "朝", "hiru": "昼", "yoru": "夜", "ima": "今",
+    "kyou": "今日", "kinou": "昨日", "ashita": "明日", "raigetsu": "来月", "sengetsu": "先月",
+    "kotoshi": "今年", "rainen": "来年", "kyonen": "去年"
+};
+
+function convert() {
+    let input = document.getElementById('romaji').value.trim().toLowerCase();
+    document.getElementById('hiragana').textContent = wanakana.toHiragana(input);
+    document.getElementById('katakana').textContent = wanakana.toKatakana(input);
+    
+    let found = '(no kanji found)';
+    if (input.length > 0) {
+        for (let key in kanjiDict) {
+            if (key.startsWith(input)) {
+                found = kanjiDict[key];
+                break;
+            }
+        }
+    }
+    document.getElementById('kanji').textContent = found;
+}
+
+function copyText(id) {
+    let text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text);
+    alert('Copied: ' + text);
+}
+</script>
+</body>
+</html>
