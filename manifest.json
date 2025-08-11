@@ -1,10 +1,11 @@
 {
   "name": "Romaji to Japanese Converter",
-  "short_name": "Romaji2JP",
-  "start_url": "index.html",
+  "short_name": "RomajiJP",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#121212",
+  "description": "Convert Romaji to Japanese instantly with copy button.",
   "icons": [
     {
       "src": "icon-192.png",
